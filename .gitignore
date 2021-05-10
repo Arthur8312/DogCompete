@@ -1,0 +1,3 @@
+*.wav
+train/meta_train.csv
+*.npy
