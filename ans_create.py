@@ -32,7 +32,7 @@ for data in test_list:
     mel = mel.reshape(1, 120, 499, 1)
     ans = model.predict(mel)
     ans = ans.tolist()
-    data_l = [data] + ans[0]
+    data_l = [data.split('.')[0]] + ans[0]
     ans_list.append(data_l)
     
 with open('submission.csv','w', newline='') as csvfile:
