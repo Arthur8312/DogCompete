@@ -20,8 +20,8 @@ other = []
 for data in label:
     if data[1] == '5':
         other.append(data)
-        audio, sr = librosa.load('train/'+other[0][0]+'.wav', sr=16000)
-        mel = python_speech_features.logfbank(audio, samplerate=16000, nfft=2048, nfilt=120)
+        audio, sr = librosa.load('train/'+other[0][0]+'.wav', sr=8000)
+        mel = python_speech_features.logfbank(audio, samplerate=8000, nfft=1024, nfilt=120)
         mel_list.append(mel.T)
 np.save('npy/'+'Other'+'.npy', mel_list)
 category = ['Barking', 'Howling', 'Crying', 'COSmoke', 'GlassBreaking', 'Other']
@@ -31,8 +31,8 @@ mel_list = []
 index = 0
 temp = category[index]
 for data in label:
-    audio, sr = librosa.load('train/'+data[0]+'.wav', sr=16000)
-    mel = python_speech_features.logfbank(audio, samplerate=16000, nfft=2048, nfilt=120)
+    audio, sr = librosa.load('train/'+data[0]+'.wav', sr=8000)
+    mel = python_speech_features.logfbank(audio, samplerate=8000, nfft=1024, nfilt=120)
     if index == int(data[1]):
         mel_list.append(mel.T)
     else:

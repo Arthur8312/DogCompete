@@ -17,7 +17,7 @@ import tensorflow_addons as tfa
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
-epochs = 250
+epochs = 400
 batch_size = 80
 verbose = 1
 num_classes = 6
@@ -35,12 +35,12 @@ y_test_hot = to_categorical(y_test)
 
 def model_2nd():
   model = Sequential()
-  model.add(Conv2D(64, kernel_size=(3, 7), activation='relu', input_shape=(feature_dim_1, feature_dim_2, channel), padding='same'))
+  model.add(Conv2D(64, kernel_size=(3, 35), activation='relu', input_shape=(feature_dim_1, feature_dim_2, channel), padding='same'))
   model.add(MaxPooling2D(pool_size=(3, 1)))
   model.add(Conv2D(128, kernel_size=(7, 1), activation='relu', padding='same'))
   model.add(MaxPooling2D(pool_size=(4, 1)))
   model.add(Conv2D(256, kernel_size=(10, 1), activation='relu', padding='valid'))
-  model.add(Conv2D(512, kernel_size=(1, 7), activation='relu', padding='same'))
+  model.add(Conv2D(512, kernel_size=(1, 35), activation='relu', padding='same'))
   model.add(keras.layers.GlobalMaxPooling2D())
   model.add(Dropout(0.25))
   model.add(Dense(256, activation='relu'))

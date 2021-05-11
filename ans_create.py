@@ -26,8 +26,8 @@ ans_list = []
 ans_list.append(category)
 for data in test_list:
     data_path = test_path+data
-    audio, sr = librosa.load(data_path, sr=16000)
-    mel = python_speech_features.logfbank(audio, samplerate=16000, nfft=2048, nfilt=120)
+    audio, sr = librosa.load(data_path, sr=8000)
+    mel = python_speech_features.logfbank(audio, samplerate=8000, nfft=2048, nfilt=120)
     mel = mel.T
     mel = mel.reshape(1, 120, 499, 1)
     ans = model.predict(mel)

@@ -110,7 +110,7 @@ def get_train_test(split_ratio=0.9, random_state=42, npy_path=npy_path):
 
     assert X.shape[0] == len(y)
 
-    return train_test_split(X, y, test_size= (1 - split_ratio), random_state=random_state, shuffle=True)
+    return train_test_split(X, y, test_size= (1 - split_ratio),  shuffle=True)
 
 
 # print(prepare_dataset(DATA_PATH))
