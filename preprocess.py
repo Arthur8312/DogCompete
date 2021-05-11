@@ -94,7 +94,7 @@ def save_data_as_npy(input_path=DATA_PATH, output_path=npy_path, max_len=120):
         np.save(output_path+ label + '.npy', melspec_list)
 
 
-def get_train_test(split_ratio=0.8, random_state=42, npy_path=npy_path):
+def get_train_test(split_ratio=0.9, random_state=42, npy_path=npy_path):
     # Get available labels
     labels, indices, _ = get_labels(DATA_PATH)
 

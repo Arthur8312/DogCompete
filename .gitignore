@@ -1,3 +1,8 @@
 *.wav
 train/meta_train.csv
 *.npy
+*.zip
+*.hdf5
+*.pyc
+*.pyc
+__pycache__/preprocess.cpython-37.pyc

@@ -14,25 +14,18 @@ import numpy as np
 import os
 import keras.layers as layers
 import tensorflow_addons as tfa
-feature_dim_2 = 99
+feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
 epochs = 250
 batch_size = 80
 verbose = 1
-num_classes = 30
+num_classes = 6
 
 
-# preprocess.save_data_as_npy_aug(input_path='data_aug/train/', 
-#                                 output_path='data_aug/train_npy/', 
-#                                 max_len=feature_dim_2)
-
-# preprocess.save_data_as_npy(input_path='data_aug/valid/', 
-#                             output_path='data_aug/valid_npy/', 
-#                             max_len=feature_dim_2)
-
-# preprocess.save_data_to_array(max_len=feature_dim_2)
 X_train, X_test, y_train, y_test = preprocess.get_train_test()
+
+
 
 X_train = X_train.reshape(X_train.shape[0], feature_dim_1, feature_dim_2, channel)
 X_test = X_test.reshape(X_test.shape[0], feature_dim_1, feature_dim_2, channel)
