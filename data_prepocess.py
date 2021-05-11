@@ -24,7 +24,7 @@ for data in label:
         mel = python_speech_features.logfbank(audio, samplerate=16000, nfft=2048, nfilt=120)
         mel_list.append(mel.T)
 np.save('npy/'+'Other'+'.npy', mel_list)
-category = ['Barking', 'Howling', 'Crying', 'CO_Smoke', 'GlassBreaking', 'Other']
+category = ['Barking', 'Howling', 'Crying', 'COSmoke', 'GlassBreaking', 'Other']
 for data in category:
   os.makedirs('data/'+data, exist_ok=True)
 mel_list = []

@@ -21,7 +21,7 @@ test_path = 'public_test/'
 test_list = os.listdir(test_path)
 weight_path = 'SpeechModel_0217.hdf5'
 model = keras.models.load_model(weight_path, compile = False)
-category = ['Filename','Barking', 'Howling', 'Crying', 'CO_Smoke', 'GlassBreaking', 'Other']
+category = ['Filename','Barking', 'Howling', 'Crying', 'COSmoke', 'GlassBreaking', 'Other']
 ans_list = []
 ans_list.append(category)
 for data in test_list:
