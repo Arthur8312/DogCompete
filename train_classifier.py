@@ -69,6 +69,9 @@ model = model_2nd()
 
 model.summary()
 model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
-
+model.compile(loss=keras.losses.categorical_crossentropy,
+            optimizer=keras.optimizers.Adam(lr=1e-6),
+            metrics=['accuracy'])
+model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
 model.save('SpeechModel_0217.hdf5')
 
