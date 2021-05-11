@@ -19,7 +19,7 @@ import tensorflow.keras as keras
 import csv
 test_path = 'public_test/'
 test_list = os.listdir(test_path)
-weight_path = 'SpeechModel_0217.hdf5'
+weight_path = 'checkpoint-250.hdf5'
 model = keras.models.load_model(weight_path, compile = False)
 category = ['Filename','Barking', 'Howling', 'Crying', 'COSmoke', 'GlassBreaking', 'Other']
 ans_list = []
@@ -35,6 +35,6 @@ for data in test_list:
     data_l = [data.split('.')[0]] + ans[0]
     ans_list.append(data_l)
     
-with open('submission.csv','w', newline='') as csvfile:
+with open('test.csv','w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerows(ans_list)
