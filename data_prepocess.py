@@ -27,9 +27,10 @@ for data in label:
     if index == int(data[1]):
         mel_list.append(mel)
     else:
-        np.save(temp+'.npy', mel_list)
+        np.save('npy/'+temp+'.npy', mel_list)
         #Update to new category
         index = index + 1
-        tempe = category[index]
+        temp = category[index]
         mel_list = []
         mel_list.append(mel)
+np.save('npy/'+temp+'.npy', mel_list)
