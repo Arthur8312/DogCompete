@@ -17,7 +17,7 @@ import tensorflow_addons as tfa
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
-epochs = 400
+epochs = 250
 batch_size = 80
 verbose = 1
 num_classes = 6
@@ -75,8 +75,8 @@ if not os.path.exists(weight_dir):
     os.mkdir(weight_dir)
 checkpoint = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5', period = 50)
 
-# model = Res15()
-model = keras.models.load_model('model_log/checkpoint-250.hdf5')
+# model = model_2nd()
+model = keras.models.load_model('model_log/checkpoint-150.hdf5')
 
 # model.compile(optimizer=tfa.optimizers.NovoGrad(learning_rate = 0.001,
 #                                                     beta_1=0.98,
@@ -91,5 +91,5 @@ model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-6),
             metrics=['accuracy'])
 model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
-model.save('Dog_0512.hdf5')
+model.save('Dog_0512_2.hdf5')
 
