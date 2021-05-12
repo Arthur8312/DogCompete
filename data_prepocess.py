@@ -66,6 +66,7 @@ mel_list = []
 index = 0
 temp = category[index]
 train_path = 'train_npy/'
+
 for data in X_train:
     wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
     for i in range(total_aug):
