@@ -24,15 +24,11 @@ num_classes = 6
 
 
 
-def get_train_test(labels, npy_path):
-    # Get available labels
+def get_data(labels, npy_path):
 
-
-    # Getting first arrays
     X = np.load(npy_path + labels[0] + '.npy', allow_pickle=True )
     y = np.zeros(X.shape[0])
 
-    # Append all of the dataset into one single array, same goes for y
     for i, label in enumerate(labels[1:]):
         x = np.load(npy_path + label + '.npy', allow_pickle=True )
         X = np.vstack((X, x))
@@ -42,8 +38,8 @@ def get_train_test(labels, npy_path):
 
     return X,y
 category = ['Barking', 'Howling', 'Crying', 'COSmoke', 'GlassBreaking', 'Other']
-X_train, y_train = get_train_test(category, 'train_npy/')
-X_test, y_test = get_train_test(category, 'val_npy/')
+X_train, y_train = get_data(category, 'train_npy/')
+X_test, y_test = get_data(category, 'val_npy/')
 
 X_train = X_train.reshape(X_train.shape[0], feature_dim_1, feature_dim_2, channel)
 X_test = X_test.reshape(X_test.shape[0], feature_dim_1, feature_dim_2, channel)
@@ -51,7 +47,7 @@ X_test = X_test.reshape(X_test.shape[0], feature_dim_1, feature_dim_2, channel)
 y_train_hot = to_categorical(y_train)
 y_test_hot = to_categorical(y_test)
 
-def model_2nd():
+def audio_model():
   model = Sequential()
   model.add(Conv2D(64, kernel_size=(3, 35), activation='relu', input_shape=(feature_dim_1, feature_dim_2, channel), padding='same'))
   model.add(MaxPooling2D(pool_size=(3, 1)))
@@ -75,15 +71,10 @@ if not os.path.exists(weight_dir):
     os.mkdir(weight_dir)
 checkpoint = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5', period = 50)
 
-# model = model_2nd()
+# model = audio_model()
 model = keras.models.load_model('model_log/checkpoint-150.hdf5')
 
-# model.compile(optimizer=tfa.optimizers.NovoGrad(learning_rate = 0.001,
-#                                                     beta_1=0.98,
-#                                                     beta_2=0.5,
-#                                                     weight_decay=0.001),
-#                   loss=keras.losses.categorical_crossentropy,
-#                   metrics=['accuracy'])
+
 
 model.summary()
 # model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
