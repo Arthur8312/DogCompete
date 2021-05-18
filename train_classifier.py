@@ -13,7 +13,7 @@ import numpy as np
 import os
 import keras.layers as layers
 import tensorflow_addons as tfa
-
+from sklearn.model_selection import KFold
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
@@ -81,6 +81,11 @@ model.summary()
 model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-6),
             metrics=['accuracy'])
-model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
+
+seed = 7
+np.random.seed(seed)
+kf = KFold(n_splits=10,shuffle=False, random_state=seed)
+for train_index , test_index in kf.split(X_test):
+    model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test[test_index], y_test_hot[test_index]), callbacks=[checkpoint])
 model.save('Dog_0512_2.hdf5')
 
