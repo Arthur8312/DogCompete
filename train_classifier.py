@@ -17,7 +17,7 @@ from sklearn.model_selection import KFold
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
-epochs = 250
+epochs = 10
 batch_size = 80
 verbose = 1
 num_classes = 6
@@ -69,7 +69,7 @@ def audio_model():
 weight_dir = "model_log"
 if not os.path.exists(weight_dir):
     os.mkdir(weight_dir)
-checkpoint = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5', period = 50)
+checkpoint = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5')
 
 # model = audio_model()
 model = keras.models.load_model('model_log/checkpoint-150.hdf5')
