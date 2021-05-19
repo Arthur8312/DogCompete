@@ -20,8 +20,18 @@ from sklearn.model_selection import train_test_split
 import zipfile
 
 import tensorflow as tf
-
+from tensorflow.python.ops import math_ops
 tqdm.pandas()
+
+def gelu(features, approximate=False, name=None):
+        if approximate:
+            coeff = math_ops.cast(0.044715, features.dtype)
+            return 0.5 * features * (
+                1.0 + math_ops.tanh(0.7978845608028654 *
+                                    (features + coeff * math_ops.pow(features, 3))))
+        else:
+            return 0.5 * features * (1.0 + math_ops.erf(
+                features / math_ops.cast(1.4142135623730951, features.dtype)))
 
 def scaled_dot_product_attention(query, key, value, mask):
   matmul_qk = tf.matmul(query, key, transpose_b=True)
@@ -136,7 +146,7 @@ def encoder_layer(units, d_model, num_heads, dropout,name="encoder_layer"):
   attention = tf.keras.layers.LayerNormalization(
       epsilon=1e-6)(inputs + attention)
 
-  outputs = tf.keras.layers.Dense(units=units, activation='relu')(attention)
+  outputs = tf.keras.layers.Dense(units=units, activation=gelu)(attention)
   outputs = tf.keras.layers.Dense(units=d_model)(outputs)
   outputs = tf.keras.layers.Dropout(rate=dropout)(outputs)
   outputs = tf.keras.layers.LayerNormalization(
