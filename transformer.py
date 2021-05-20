@@ -53,8 +53,7 @@ class MultiHeadAttention(tf.keras.layers.Layer):
     super(MultiHeadAttention, self).__init__(name=name)
     self.num_heads = num_heads
     self.d_model = d_model
-    print(d_model)
-    print(self.num_heads)
+
     assert d_model % self.num_heads == 0
 
     self.depth = d_model // self.num_heads
@@ -95,6 +94,14 @@ class MultiHeadAttention(tf.keras.layers.Layer):
     outputs = self.dense(concat_attention)
 
     return outputs
+  def get_config(self):
+      return {"num_heads":self.num_heads,
+              "d_model":self.d_model,
+              "depth":self.depth ,
+              "query_dense":self.query_dense,
+              "key_dense":self.key_dense,
+              "value_dense":self.value_dense,
+              "dense":self.dense}
 
 class PositionalEncoding(tf.keras.layers.Layer):
 
@@ -122,7 +129,8 @@ class PositionalEncoding(tf.keras.layers.Layer):
 
   def call(self, inputs):
     return inputs + self.pos_encoding[:, :tf.shape(inputs)[1], :]
-
+  def get_config(self):
+      return {"pos_encoding":self.pos_encoding.numpy()}
 # This allows to the transformer to know where there is real data and where it is padded
 def create_padding_mask(seq):
   seq = tf.cast(tf.math.equal(seq, 0), tf.float32)
@@ -191,6 +199,7 @@ def encoder(time_steps,
  
   return tf.keras.Model(inputs=[inputs, padding_mask], outputs=outputs, name=name)
 
+      
 def transformer(time_steps,
                 num_layers,
                 units,

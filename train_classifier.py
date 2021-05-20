@@ -14,6 +14,7 @@ import os
 import keras.layers as layers
 import tensorflow_addons as tfa
 from sklearn.model_selection import KFold
+from classification_models.keras import Classifiers
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
@@ -72,9 +73,12 @@ if not os.path.exists(weight_dir):
 checkpoint = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5')
 
 # model = audio_model()
-model = keras.models.load_model('model_log/checkpoint-150.hdf5')
-
-
+# model = keras.models.load_model('model_log/checkpoint-150.hdf5')
+ResNet18, predata = Classifiers.get('resnet18')
+base_model = ResNet18((feature_dim_1, feature_dim_2, channel), include_top=False)
+x = keras.layers.GlobalAveragePooling2D()(base_model.output)
+output = keras.layers.Dense(6, activation='softmax')(x)
+model = keras.models.Model(inputs=[base_model.input], outputs=[output])
 
 model.summary()
 # model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])

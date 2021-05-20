@@ -18,7 +18,7 @@ import transformer
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
-epochs = 150
+epochs = 100
 batch_size = 80
 verbose = 1
 num_classes = 6
@@ -56,19 +56,18 @@ y_test_hot = to_categorical(y_test)
 weight_dir = "model_log"
 if not os.path.exists(weight_dir):
     os.mkdir(weight_dir)
-checkpoint = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5' ,save_weights_only=True)
+checkpoint = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5' ,save_weights_only=False)
 
 # # model = audio_model()
 # model = keras.models.load_model('model_log/checkpoint-150.hdf5')
-NUM_LAYERS = 2
+NUM_LAYERS = 1
 D_MODEL = X_train.shape[2]
-NUM_HEADS = 4
+NUM_HEADS = 2
 UNITS = 1024
-DROPOUT = 0.1
+DROPOUT = 0.25
 TIME_STEPS= X_train.shape[1]
 OUTPUT_SIZE=6
-EPOCHS = 150
-EXPERIMENTS=10
+
 
 model = transformer.transformer(time_steps=TIME_STEPS,
   num_layers=NUM_LAYERS,
@@ -81,8 +80,11 @@ model = transformer.transformer(time_steps=TIME_STEPS,
 
 
 model.summary()
-model.load_weights('model_log/checkpoint-75.hdf5')
-# model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
+model = keras.models.load_model('model_log/checkpoint-01.hdf5')
+model.compile(loss=keras.losses.categorical_crossentropy,
+            optimizer=keras.optimizers.Adam(lr=1e-5),
+            metrics=['accuracy'])
+model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
 model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-6),
             metrics=['accuracy'])
