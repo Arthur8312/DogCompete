@@ -31,13 +31,15 @@ for data in test_list:
         ans = ans.tolist()[0]
         ans2 = model_step2.predict(mel)
         ans2 = ans2.tolist()[0]
+        ans2 = [ans[0]*ans2[0],ans[0]*ans2[1],ans[0]*ans2[1]]
     else:
         ans = ans.tolist()[0]
         ans2 = [ans[0]/3, ans[0]/3, ans[0]/3]
        
 
-    ans = ans2 + ans[1:-1]
-    
+    ans = ans2 + ans[1:3]
+    ans.append(1-sum(ans))
+    print(sum(ans))
     data_l = [data.split('.')[0]] + ans
     ans_list.append(data_l)
     
