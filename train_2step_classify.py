@@ -44,10 +44,16 @@ X_test = X_test.reshape(X_test.shape[0], feature_dim_1, feature_dim_2, channel)
 
 y_train_step1 = y_train.copy()
 y_train_step1[y_train_step1<3] = 0
+y_train_step1[y_train_step1==3] = 1
+y_train_step1[y_train_step1==4] = 2
+y_train_step1[y_train_step1==5] = 3
 y_train_step1_hot = to_categorical(y_train_step1)
 
 y_test_step1 = y_test.copy()
 y_test_step1[y_test_step1<3] = 0
+y_test_step1[y_test_step1==3] = 1
+y_test_step1[y_test_step1==4] = 2
+y_test_step1[y_test_step1==5] = 3
 y_test_step1_hot = to_categorical(y_test_step1)
 
 y_train_step2 = y_train[y_train<3].copy()
@@ -59,12 +65,12 @@ X_test_step2 = X_test[0:len(y_test_step2),:,:,:]
 
 def audio_model(num_classes):
   model = Sequential()
-  model.add(Conv2D(64, kernel_size=(3, 10), activation='relu', input_shape=(feature_dim_1, feature_dim_2, channel), padding='same'))
+  model.add(Conv2D(64, kernel_size=(3, 35), activation='relu', input_shape=(feature_dim_1, feature_dim_2, channel), padding='same'))
   model.add(MaxPooling2D(pool_size=(3, 1)))
   model.add(Conv2D(128, kernel_size=(7, 1), activation='relu', padding='same'))
   model.add(MaxPooling2D(pool_size=(4, 1)))
   model.add(Conv2D(256, kernel_size=(10, 1), activation='relu', padding='valid'))
-  model.add(Conv2D(512, kernel_size=(1, 10), activation='relu', padding='same'))
+  model.add(Conv2D(512, kernel_size=(1, 35), activation='relu', padding='same'))
   model.add(keras.layers.GlobalMaxPooling2D())
   model.add(Dropout(0.25))
   model.add(Dense(256, activation='relu'))
