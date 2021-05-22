@@ -10,6 +10,7 @@ import python_speech_features
 import tensorflow.keras as keras
 import csv
 import numpy as np
+import tensorflow as tf
 test_path = 'public_test/'
 test_list = os.listdir(test_path)
 weight_path = 'step1.hdf5'
@@ -19,6 +20,10 @@ model_step2 = keras.models.load_model(weight_path_s2, compile = False)
 category = ['Filename','Barking', 'Howling', 'Crying', 'COSmoke', 'GlassBreaking', 'Other']
 ans_list = []
 ans_list.append(category)
+def softmax(x):
+    """Compute softmax values for each sets of scores in x."""
+    e_x = np.exp(x - np.max(x))
+    return e_x / e_x.sum(axis=0)
 for data in test_list:
     data_path = test_path+data
     audio, sr = librosa.load(data_path, sr=8000)
@@ -31,14 +36,15 @@ for data in test_list:
         ans = ans.tolist()[0]
         ans2 = model_step2.predict(mel)
         ans2 = ans2.tolist()[0]
-        ans2 = [ans[0]*ans2[0],ans[0]*ans2[1],ans[0]*ans2[1]]
+        ans2 = [ans[0]*ans2[0],ans[0]*ans2[1],ans[0]*ans2[2]]
     else:
         ans = ans.tolist()[0]
         ans2 = [ans[0]/3, ans[0]/3, ans[0]/3]
        
 
-    ans = ans2 + ans[1:3]
-    ans.append(1-sum(ans))
+    ans = ans2 + ans[1:4]
+    ans = [x/sum(ans) for x in ans]
+    # ans.append(1-sum(ans))
     print(sum(ans))
     data_l = [data.split('.')[0]] + ans
     ans_list.append(data_l)
