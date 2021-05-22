@@ -42,7 +42,7 @@ with open('sample_submission.csv') as csvfile:
     rows = csv.reader(csvfile)
     new = list(rows)
 
-new[1:10000] = ans_list[1:10000]
+new[1:10001] = ans_list[1:10001]
 with open('submission.csv','w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerows(new)
