@@ -81,26 +81,46 @@ def audio_model(num_classes):
               metrics=['accuracy'])
   return model
 
-model_step1 = audio_model(4)
-weight_dir = "model_step1"
-if not os.path.exists(weight_dir):
-    os.mkdir(weight_dir)
-checkpoint1 = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5')
-model_step1.summary()
-model_step1.fit(X_train, y_train_step1_hot, batch_size=batch_size, epochs=20, verbose=verbose, validation_data=(X_test, y_test_step1_hot), callbacks=[checkpoint1])
-model_step1.compile(loss=keras.losses.categorical_crossentropy,
-            optimizer=keras.optimizers.Adam(lr=1e-6),
-            metrics=['accuracy'])
-model_step1.fit(X_train, y_train_step1_hot, batch_size=batch_size, epochs=30, verbose=verbose, validation_data=(X_test, y_test_step1_hot), callbacks=[checkpoint1])
-del model_step1
-model_step2 = audio_model(3)
+
+def audio_model_dog(num_classes):
+  model = Sequential()
+  model.add(Conv2D(64, kernel_size=(3, 7), activation='relu', input_shape=(feature_dim_1, feature_dim_2, channel), padding='same'))
+  model.add(MaxPooling2D(pool_size=(3, 1)))
+  model.add(Conv2D(128, kernel_size=(7, 1), activation='relu', padding='same'))
+  model.add(MaxPooling2D(pool_size=(4, 1)))
+  model.add(Conv2D(256, kernel_size=(10, 1), activation='relu', padding='valid'))
+  model.add(Conv2D(512, kernel_size=(1, 7), activation='relu', padding='same'))
+  model.add(keras.layers.GlobalMaxPooling2D())
+  model.add(Dropout(0.25))
+  model.add(Dense(256, activation='relu'))
+  model.add(Dropout(0.4))
+  model.add(Dense(num_classes, activation='softmax'))
+  model.compile(loss=keras.losses.categorical_crossentropy,
+              optimizer=keras.optimizers.Adam(lr=1e-5),
+              metrics=['accuracy'])
+  return model
+
+# model_step1 = audio_model(4)
+# weight_dir = "model_step1"
+# if not os.path.exists(weight_dir):
+#     os.mkdir(weight_dir)
+# checkpoint1 = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5')
+# model_step1.summary()
+# model_step1.fit(X_train, y_train_step1_hot, batch_size=batch_size, epochs=20, verbose=verbose, validation_data=(X_test, y_test_step1_hot), callbacks=[checkpoint1])
+# model_step1.compile(loss=keras.losses.categorical_crossentropy,
+#             optimizer=keras.optimizers.Adam(lr=1e-6),
+#             metrics=['accuracy'])
+# model_step1.fit(X_train, y_train_step1_hot, batch_size=batch_size, epochs=30, verbose=verbose, validation_data=(X_test, y_test_step1_hot), callbacks=[checkpoint1])
+# del model_step1
+
+model_step2 = audio_model_dog(3)
 weight_dir = "model_step2"
 if not os.path.exists(weight_dir):
     os.mkdir(weight_dir)
 checkpoint2 = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5')
 model_step2.summary()
-model_step2.fit(X_train_step2, y_train_step2_hot, batch_size=batch_size, epochs=20, verbose=verbose, validation_data=(X_test_step2, y_test_step2_hot), callbacks=[checkpoint2])
+model_step2.fit(X_train_step2, y_train_step2_hot, batch_size=batch_size, epochs=50, verbose=verbose, validation_data=(X_test_step2, y_test_step2_hot), callbacks=[checkpoint2])
 model_step2.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-6),
             metrics=['accuracy'])
-model_step2.fit(X_train_step2, y_train_step2_hot, batch_size=batch_size, epochs=30, verbose=verbose, validation_data=(X_test_step2, y_test_step2_hot), callbacks=[checkpoint2])
+model_step2.fit(X_train_step2, y_train_step2_hot, batch_size=batch_size, epochs=50, verbose=verbose, validation_data=(X_test_step2, y_test_step2_hot), callbacks=[checkpoint2])

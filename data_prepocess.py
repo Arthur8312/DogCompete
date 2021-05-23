@@ -10,6 +10,7 @@ import librosa
 import numpy as np
 import os
 import nlpaug.augmenter.audio as ag
+import nlpaug.flow as augf
 from sklearn.model_selection import train_test_split
 
 #讀取CSV
@@ -21,7 +22,9 @@ label.remove(label[0])
 mel_list = []
 other = []
 
-X_train, X_validation = train_test_split(label, test_size = 0.1, random_state = 42)
+y = [num[1] for num in label]
+X_train, X_validation = train_test_split(label, stratify = y ,test_size = 0.1, random_state=42)
+
 X_train.sort(key= lambda s:s[1])
 X_validation.sort(key= lambda s:s[1])
 
@@ -66,12 +69,13 @@ mel_list = []
 index = 0
 temp = category[index]
 train_path = 'train_npy/'
-
+aug = augf.Sequential([ag.VtlpAug(8000, zone=(0,1), coverage=1)])
 for data in X_train:
     wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
-    for i in range(total_aug):
-        aug = ag.VtlpAug(sr)
-        mel = wav2melspec(wave, sr)
+    aug_datas = aug.augment(wave, n=9)
+    aug_datas.append(wave)
+    for aug_data in aug_datas:
+        mel = wav2melspec(aug_data, sr)
         if index == int(data[1]):
             mel_list.append(mel)
         else:
