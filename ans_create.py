@@ -19,7 +19,7 @@ import tensorflow.keras as keras
 import csv
 test_path = 'public_test/'
 test_list = os.listdir(test_path)
-weight_path = 'Dog_0512_2.hdf5'
+weight_path = 'aug_0523.hdf5'
 model = keras.models.load_model(weight_path, compile = False)
 category = ['Filename','Barking', 'Howling', 'Crying', 'COSmoke', 'GlassBreaking', 'Other']
 ans_list = []

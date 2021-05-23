@@ -18,7 +18,7 @@ from classification_models.keras import Classifiers
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
-epochs = 20
+epochs = 50
 batch_size = 80
 verbose = 1
 num_classes = 6
