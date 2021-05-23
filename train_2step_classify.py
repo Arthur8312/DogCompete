@@ -100,18 +100,18 @@ def audio_model_dog(num_classes):
               metrics=['accuracy'])
   return model
 
-# model_step1 = audio_model(4)
-# weight_dir = "model_step1"
-# if not os.path.exists(weight_dir):
-#     os.mkdir(weight_dir)
-# checkpoint1 = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5')
-# model_step1.summary()
-# model_step1.fit(X_train, y_train_step1_hot, batch_size=batch_size, epochs=20, verbose=verbose, validation_data=(X_test, y_test_step1_hot), callbacks=[checkpoint1])
-# model_step1.compile(loss=keras.losses.categorical_crossentropy,
-#             optimizer=keras.optimizers.Adam(lr=1e-6),
-#             metrics=['accuracy'])
-# model_step1.fit(X_train, y_train_step1_hot, batch_size=batch_size, epochs=30, verbose=verbose, validation_data=(X_test, y_test_step1_hot), callbacks=[checkpoint1])
-# del model_step1
+model_step1 = audio_model(4)
+weight_dir = "model_step1"
+if not os.path.exists(weight_dir):
+    os.mkdir(weight_dir)
+checkpoint1 = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5')
+model_step1.summary()
+model_step1.fit(X_train, y_train_step1_hot, batch_size=batch_size, epochs=20, verbose=verbose, validation_data=(X_test, y_test_step1_hot), callbacks=[checkpoint1])
+model_step1.compile(loss=keras.losses.categorical_crossentropy,
+            optimizer=keras.optimizers.Adam(lr=1e-6),
+            metrics=['accuracy'])
+model_step1.fit(X_train, y_train_step1_hot, batch_size=batch_size, epochs=30, verbose=verbose, validation_data=(X_test, y_test_step1_hot), callbacks=[checkpoint1])
+del model_step1
 
 model_step2 = audio_model_dog(3)
 weight_dir = "model_step2"
