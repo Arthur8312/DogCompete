@@ -80,7 +80,7 @@ model = transformer.transformer(time_steps=TIME_STEPS,
 
 
 model.summary()
-model = keras.models.load_model('model_log/checkpoint-01.hdf5')
+# model = keras.models.load_model('model_log/checkpoint-01.hdf5')
 model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-5),
             metrics=['accuracy'])

@@ -49,24 +49,27 @@ def scaled_dot_product_attention(query, key, value, mask):
 
 class MultiHeadAttention(tf.keras.layers.Layer):
 
-  def __init__(self, d_model, num_heads, name="multi_head_attention"):
-    super(MultiHeadAttention, self).__init__(name=name)
+  def __init__(self, d_model, num_heads, name="multi_head_attention",  **kwargs):
+    super(MultiHeadAttention, self).__init__(name=name,  **kwargs)
     self.num_heads = num_heads
     self.d_model = d_model
 
     assert d_model % self.num_heads == 0
 
-    self.depth = d_model // self.num_heads
+    
 
-    self.query_dense = tf.keras.layers.Dense(units=d_model)
-    self.key_dense = tf.keras.layers.Dense(units=d_model)
-    self.value_dense = tf.keras.layers.Dense(units=d_model)
 
-    self.dense = tf.keras.layers.Dense(units=d_model)
+  def build(self, input_shape):
+      self.depth = self.d_model // self.num_heads
+      self.query_dense = tf.keras.layers.Dense(units=self.d_model)
+      self.key_dense = tf.keras.layers.Dense(units=self.d_model)
+      self.value_dense = tf.keras.layers.Dense(units=self.d_model)
 
+      self.dense = tf.keras.layers.Dense(units=self.d_model)
+      
   def split_heads(self, inputs, batch_size):
     inputs = tf.reshape(
-        inputs, shape=(batch_size, -1, self.num_heads, self.depth))
+        inputs, shape=(batch_size, -1, self.num_heads, self.depth ))
     return tf.transpose(inputs, perm=[0, 2, 1, 3])
 
   def call(self, inputs):
@@ -95,42 +98,39 @@ class MultiHeadAttention(tf.keras.layers.Layer):
 
     return outputs
   def get_config(self):
-      return {"num_heads":self.num_heads,
-              "d_model":self.d_model,
-              "depth":self.depth ,
-              "query_dense":self.query_dense,
-              "key_dense":self.key_dense,
-              "value_dense":self.value_dense,
-              "dense":self.dense}
+       config = super().get_config().copy()
+       config.update({"num_heads":self.num_heads,
+               "d_model":self.d_model,})
+       return config
 
-class PositionalEncoding(tf.keras.layers.Layer):
+# class PositionalEncoding(tf.keras.layers.Layer):
 
-  def __init__(self, position, d_model):
-    super(PositionalEncoding, self).__init__()
-    self.pos_encoding = self.positional_encoding(position, d_model)
+#   def __init__(self, position, d_model):
+#     super(PositionalEncoding, self).__init__()
+#     self.pos_encoding = self.positional_encoding(position, d_model)
 
-  def get_angles(self, position, i, d_model):
-    angles = 1 / tf.pow(10000, (2 * (i // 2)) / tf.cast(d_model, tf.float32))
-    return position * angles
+#   def get_angles(self, position, i, d_model):
+#     angles = 1 / tf.pow(10000, (2 * (i // 2)) / tf.cast(d_model, tf.float32))
+#     return position * angles
 
-  def positional_encoding(self, position, d_model):
-    angle_rads = self.get_angles(
-        position=tf.range(position, dtype=tf.float32)[:, tf.newaxis],
-        i=tf.range(d_model, dtype=tf.float32)[tf.newaxis, :],
-        d_model=d_model)
-    # apply sin to even index in the array
-    sines = tf.math.sin(angle_rads[:, 0::2])
-    # apply cos to odd index in the array
-    cosines = tf.math.cos(angle_rads[:, 1::2])
+#   def positional_encoding(self, position, d_model):
+#     angle_rads = self.get_angles(
+#         position=tf.range(position, dtype=tf.float32)[:, tf.newaxis],
+#         i=tf.range(d_model, dtype=tf.float32)[tf.newaxis, :],
+#         d_model=d_model)
+#     # apply sin to even index in the array
+#     sines = tf.math.sin(angle_rads[:, 0::2])
+#     # apply cos to odd index in the array
+#     cosines = tf.math.cos(angle_rads[:, 1::2])
 
-    pos_encoding = tf.concat([sines, cosines], axis=-1)
-    pos_encoding = pos_encoding[tf.newaxis, ...]
-    return tf.cast(pos_encoding, tf.float32)
+#     pos_encoding = tf.concat([sines, cosines], axis=-1)
+#     pos_encoding = pos_encoding[tf.newaxis, ...]
+#     return tf.cast(pos_encoding, tf.float32)
 
-  def call(self, inputs):
-    return inputs + self.pos_encoding[:, :tf.shape(inputs)[1], :]
-  def get_config(self):
-      return {"pos_encoding":self.pos_encoding.numpy()}
+#   def call(self, inputs):
+#     return inputs + self.pos_encoding[:, :tf.shape(inputs)[1], :]
+#   def get_config(self):
+#       return {"pos_encoding":self.pos_encoding.numpy()}
 # This allows to the transformer to know where there is real data and where it is padded
 def create_padding_mask(seq):
   seq = tf.cast(tf.math.equal(seq, 0), tf.float32)
@@ -154,7 +154,7 @@ def encoder_layer(units, d_model, num_heads, dropout,name="encoder_layer"):
   attention = tf.keras.layers.LayerNormalization(
       epsilon=1e-6)(inputs + attention)
 
-  outputs = tf.keras.layers.Dense(units=units, activation=gelu)(attention)
+  outputs = tf.keras.layers.Dense(units=units, activation=tf.nn.gelu)(attention)
   outputs = tf.keras.layers.Dense(units=d_model)(outputs)
   outputs = tf.keras.layers.Dropout(rate=dropout)(outputs)
   outputs = tf.keras.layers.LayerNormalization(
@@ -162,6 +162,25 @@ def encoder_layer(units, d_model, num_heads, dropout,name="encoder_layer"):
 
   return tf.keras.Model(
       inputs=[inputs, padding_mask], outputs=outputs, name=name)
+
+def get_angles(pos, i, d_model):
+  angle_rates = 1 / np.power(10000, (2 * (i//2)) / np.float32(d_model))
+  return pos * angle_rates
+def positional_encoding(position, d_model):
+  angle_rads = get_angles(np.arange(position)[:, np.newaxis],
+                          np.arange(d_model)[np.newaxis, :],
+                          d_model)
+
+  # apply sin to even indices in the array; 2i
+  angle_rads[:, 0::2] = np.sin(angle_rads[:, 0::2])
+
+  # apply cos to odd indices in the array; 2i+1
+  angle_rads[:, 1::2] = np.cos(angle_rads[:, 1::2])
+
+  pos_encoding = angle_rads[np.newaxis, ...]
+
+  return tf.cast(pos_encoding, dtype=tf.float32)
+
 
 def encoder(time_steps,
             num_layers,
@@ -184,10 +203,11 @@ def encoder(time_steps,
     print('none')
    
   projection *= tf.math.sqrt(tf.cast(d_model, tf.float32))
-  projection = PositionalEncoding(time_steps, d_model)(projection)
-
+  
+  projection = tf.add(positional_encoding(time_steps, d_model), projection)
+  
   outputs = tf.keras.layers.Dropout(rate=dropout)(projection)
-
+  
   for i in range(num_layers):
     outputs = encoder_layer(
         units=units,
