@@ -6,3 +6,4 @@ train/meta_train.csv
 *.pyc
 *.pyc
 __pycache__/preprocess.cpython-37.pyc
+jarvus/NIGENS
