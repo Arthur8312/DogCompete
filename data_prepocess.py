@@ -12,7 +12,7 @@ import os
 import nlpaug.augmenter.audio as ag
 import nlpaug.flow as augf
 from sklearn.model_selection import train_test_split
-
+import pickle
 #讀取CSV
 with open('meta_train.csv') as csvfile:
     rows = csv.reader(csvfile)
@@ -72,21 +72,23 @@ train_path = 'train_npy/'
 aug = augf.Sequential([ag.VtlpAug(8000, zone=(0,1), coverage=1)])
 for data in X_train:
     wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
-    aug_datas = aug.augment(wave, n=9)
+    aug_datas = []
     aug_datas.append(wave)
     for aug_data in aug_datas:
         mel = wav2melspec(aug_data, sr)
         if index == int(data[1]):
             mel_list.append(mel)
         else:
-            # print(len(mel_list))
-            np.save(train_path+temp+'.npy', mel_list)
+            # print(len(mel_list))            
+            fw = open(train_path+temp+'.pk','wb')
+            pickle.dump(mel_list, fw)
             #Update to new category
             index = index + 1
             temp = category[index]
             mel_list = []
             mel_list.append(mel)
-np.save(train_path+temp+'.npy', mel_list)
+fw = open(train_path+temp+'.pk','wb')
+pickle.dump(mel_list, fw)
 
 # np.save('npy/'+temp+'.npy', mel_list)
 
