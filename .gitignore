@@ -7,3 +7,5 @@ train/meta_train.csv
 *.pyc
 __pycache__/preprocess.cpython-37.pyc
 jarvus/NIGENS
+*.pkl
+*.pk
