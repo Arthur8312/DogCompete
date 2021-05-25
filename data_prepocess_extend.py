@@ -30,26 +30,26 @@ pk_list = os.listdir('data_extend/')
 
 #Cry
 
-with open('data_extend/'+pk_list[1], 'rb') as fp:
-    dataset = pickle.load(fp)
-cry_extend = [wav2melspec(data) for data in dataset]
+# with open('data_extend/'+pk_list[1], 'rb') as fp:
+#     dataset = pickle.load(fp)
+# cry_extend = [wav2melspec(data) for data in dataset]
 
-with open('train_npy/Crying.pkl', 'rb') as fw:
-    cry_org  = pickle.load(fw)
+# with open('train_npy/Crying.pkl', 'rb') as fw:
+#     cry_org  = pickle.load(fw)
 
-cry_out = cry_extend + cry_org    
-np.save('train_npy/Crying.npy', cry_out)
+# cry_out = cry_extend + cry_org    
+# np.save('train_npy/Crying.npy', cry_out)
 
-#Other
-with open('data_extend/'+pk_list[3], 'rb') as fp:
-    dataset = pickle.load(fp)
-other_extend = [wav2melspec(data) for data in dataset]
+# #Other
+# with open('data_extend/'+pk_list[3], 'rb') as fp:
+#     dataset = pickle.load(fp)
+# other_extend = [wav2melspec(data) for data in dataset]
 
-with open('train_npy/Other.pkl', 'rb') as fw:
-    other_org  = pickle.load(fw)
+# with open('train_npy/Other.pkl', 'rb') as fw:
+#     other_org  = pickle.load(fw)
 
-other_out = other_extend + other_org    
-np.save('train_npy/Other.npy', other_out)
+# other_out = other_extend + other_org    
+# np.save('train_npy/Other.npy', other_out)
 
 #Howl
 
@@ -70,5 +70,10 @@ np.save('train_npy/Other.npy', other_out)
 
 # howl_list = howl_extend + howl_org    
 
-
 # np.save('train_npy/Howling.npy', howl_list)
+Barking = np.load('train_npy/Barking.npy') 
+Howling = np.load('train_npy/Howling.npy') 
+Crying = np.load('train_npy/Crying.npy')
+COSmoke = np.load('train_npy/COSmoke.npy')
+GlassBreaking = np.load('train_npy/GlassBreaking.npy')
+Other = np.load('train_npy/Other.npy')

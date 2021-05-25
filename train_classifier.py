@@ -18,7 +18,7 @@ from classification_models.keras import Classifiers
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
-epochs = 50
+epochs = 30i
 batch_size = 80
 verbose = 1
 num_classes = 6
@@ -59,10 +59,10 @@ def audio_model():
   model.add(keras.layers.GlobalMaxPooling2D())
   model.add(Dropout(0.25))
   model.add(Dense(256, activation='relu'))
-  model.add(Dropout(0.4))
+  model.add(Dropout(0.2))
   model.add(Dense(num_classes, activation='softmax'))
   model.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.Adam(lr=1e-5),
+              optimizer=keras.optimizers.Adam(lr=1e-4),
               metrics=['accuracy'])
   return model
 
@@ -83,13 +83,14 @@ model = audio_model()
 model.summary()
 model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
 model.compile(loss=keras.losses.categorical_crossentropy,
-            optimizer=keras.optimizers.Adam(lr=1e-6),
+            optimizer=keras.optimizers.Adam(lr=1e-5),
             metrics=['accuracy'])
+model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
 
-seed = 7
-np.random.seed(seed)
-kf = KFold(n_splits=10,shuffle=False, random_state=seed)
-for train_index , test_index in kf.split(X_test):
-    model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=10, verbose=verbose, validation_data=(X_test[test_index], y_test_hot[test_index]), callbacks=[checkpoint])
-model.save('Dog_0512_2.hdf5')
+# seed = 7
+# np.random.seed(seed)
+# kf = KFold(n_splits=10,shuffle=False, random_state=seed)
+# for train_index , test_index in kf.split(X_test):
+#     model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=10, verbose=verbose, validation_data=(X_test[test_index], y_test_hot[test_index]), callbacks=[checkpoint])
+# model.save('Dog_0512_2.hdf5')
 
