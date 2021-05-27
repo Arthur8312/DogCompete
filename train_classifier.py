@@ -16,6 +16,7 @@ import tensorflow_addons as tfa
 from sklearn.model_selection import KFold
 from classification_models.keras import Classifiers
 import tf.keras.callbacks.ModelCheckpoint as ModelCheckpoint
+import matplotlib.pyplot as plt
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
@@ -84,12 +85,27 @@ model = audio_model()
 # model = keras.models.Model(inputs=[base_model.input], outputs=[output])
 
 model.summary()
-H  = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
+history  = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig('acc1.png')
+plt.close()
 model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-5),
             metrics=['accuracy'])
-H = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
-
+history = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig('acc2.png')
+plt.close()
 # seed = 7
 # np.random.seed(seed)
 # kf = KFold(n_splits=10,shuffle=False, random_state=seed)
