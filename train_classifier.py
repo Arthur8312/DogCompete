@@ -15,6 +15,7 @@ import keras.layers as layers
 import tensorflow_addons as tfa
 from sklearn.model_selection import KFold
 from classification_models.keras import Classifiers
+import tf.keras.callbacks.ModelCheckpoint as ModelCheckpoint
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
@@ -67,10 +68,12 @@ def audio_model():
   return model
 
 
-weight_dir = "model_log"
+weight_dir = "model_log/"
 if not os.path.exists(weight_dir):
     os.mkdir(weight_dir)
-checkpoint = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5')
+callback = [
+    ModelCheckpoint(weight_dir+'-{epoch:02d}-{val_loss:.3f}.h5', monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+]
 
 model = audio_model()
 # model = keras.models.load_model('model_log/checkpoint-150.hdf5')
@@ -81,11 +84,11 @@ model = audio_model()
 # model = keras.models.Model(inputs=[base_model.input], outputs=[output])
 
 model.summary()
-model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
+H  = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
 model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-5),
             metrics=['accuracy'])
-model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
+H = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
 
 # seed = 7
 # np.random.seed(seed)
