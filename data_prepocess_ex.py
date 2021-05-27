@@ -20,7 +20,7 @@ with open('meta_train.csv') as csvfile:
     label = list(rows)
 
 def wav2melspec(wave, sr, max_len=499):
-    melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120)
+    melspec = python_speech_features.base.ssc(wave, samplerate=sr, nfft=1024, nfilt=120)
     melspec = melspec.T
     if (max_len > melspec.shape[1]):
         pad_width = max_len - melspec.shape[1]

@@ -22,7 +22,7 @@ feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
 epochs = 100
-batch_size = 20
+batch_size = 2
 verbose = 1
 num_classes = 6
 
@@ -65,7 +65,7 @@ callback = [
 ]
 # # model = audio_model()
 # model = keras.models.load_model('model_log/checkpoint-150.hdf5')
-NUM_LAYERS = 4
+NUM_LAYERS = 10
 D_MODEL = X_train.shape[2]
 NUM_HEADS = 2
 UNITS = 1024
@@ -87,11 +87,11 @@ model = transformer.transformer(time_steps=TIME_STEPS,
 model.summary()
 # model = keras.models.load_model('model_log/checkpoint-01.hdf5')
 model.compile(loss=keras.losses.categorical_crossentropy,
-            optimizer=keras.optimizers.Adam(lr=1e-5),
+            optimizer=keras.optimizers.Adam(lr=1e-4),
             metrics=['accuracy'])
 history = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
 plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
@@ -108,14 +108,14 @@ plt.savefig('result_log/loss1.png')
 plt.close()
 
 model.compile(loss=keras.losses.categorical_crossentropy,
-            optimizer=keras.optimizers.Adam(lr=1e-6),
+            optimizer=keras.optimizers.Adam(lr=1e-5),
             metrics=['accuracy'])
 
 
 model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
 # model.save('Dog_0512_2.hdf5')
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
 plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')

@@ -15,7 +15,7 @@ import keras.layers as layers
 import tensorflow_addons as tfa
 from sklearn.model_selection import KFold
 from classification_models.keras import Classifiers
-import tf.keras.callbacks.ModelCheckpoint as ModelCheckpoint
+
 import matplotlib.pyplot as plt
 feature_dim_2 = 499
 feature_dim_1 = 120
@@ -73,7 +73,7 @@ weight_dir = "model_log/"
 if not os.path.exists(weight_dir):
     os.mkdir(weight_dir)
 callback = [
-    ModelCheckpoint(weight_dir+'-{epoch:02d}-{val_loss:.3f}.h5', monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+    keras.callbacks.ModelCheckpoint(weight_dir+'-{epoch:02d}-{val_loss:.3f}.h5', monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 ]
 
 model = audio_model()
@@ -86,25 +86,41 @@ model = audio_model()
 
 model.summary()
 history  = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
 plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
 plt.savefig('acc1.png')
 plt.close()
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig('result_log/loss1.png')
+plt.close()
 model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-5),
             metrics=['accuracy'])
 history = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
 plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
 plt.savefig('acc2.png')
+plt.close()
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig('result_log/loss1.png')
 plt.close()
 # seed = 7
 # np.random.seed(seed)
