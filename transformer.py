@@ -154,7 +154,7 @@ def encoder_layer(units, d_model, num_heads, dropout,name="encoder_layer"):
   attention = tf.keras.layers.LayerNormalization(
       epsilon=1e-6)(inputs + attention)
 
-  outputs = tf.keras.layers.Dense(units=units, activation=tf.nn.gelu)(attention)
+  outputs = tf.keras.layers.Dense(units=units, activation='relu')(attention)
   outputs = tf.keras.layers.Dense(units=d_model)(outputs)
   outputs = tf.keras.layers.Dropout(rate=dropout)(outputs)
   outputs = tf.keras.layers.LayerNormalization(
