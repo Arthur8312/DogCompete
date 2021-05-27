@@ -9,3 +9,4 @@ __pycache__/preprocess.cpython-37.pyc
 jarvus/NIGENS
 *.pkl
 *.pk
+*.h5

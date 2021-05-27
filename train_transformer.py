@@ -15,11 +15,14 @@ import keras.layers as layers
 import tensorflow_addons as tfa
 from sklearn.model_selection import KFold
 import transformer
+# import tensorflow.keras.callbacks.ModelCheckpoint as ModelCheckpoint
+import matplotlib.pyplot as plt
+
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
 epochs = 100
-batch_size = 80
+batch_size = 20
 verbose = 1
 num_classes = 6
 
@@ -53,14 +56,16 @@ y_test_hot = to_categorical(y_test)
 
 
 
-weight_dir = "model_log"
+weight_dir = "model_log/"
 if not os.path.exists(weight_dir):
     os.mkdir(weight_dir)
-checkpoint = keras.callbacks.ModelCheckpoint(filepath=weight_dir+'/checkpoint-{epoch:02d}.hdf5' ,save_weights_only=False)
 
+callback = [
+    keras.callbacks.ModelCheckpoint(weight_dir+'-{epoch:02d}-{val_loss:.3f}.h5', monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+]
 # # model = audio_model()
 # model = keras.models.load_model('model_log/checkpoint-150.hdf5')
-NUM_LAYERS = 1
+NUM_LAYERS = 4
 D_MODEL = X_train.shape[2]
 NUM_HEADS = 2
 UNITS = 1024
@@ -84,12 +89,44 @@ model.summary()
 model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-5),
             metrics=['accuracy'])
-model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
+history = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig('result_log/acc1.png')
+plt.close()
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig('result_log/loss1.png')
+plt.close()
+
 model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-6),
             metrics=['accuracy'])
 
 
-model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=[checkpoint])
+model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
 # model.save('Dog_0512_2.hdf5')
-
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig('result_log/acc2.png')
+plt.close()
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig('result_log/loss2.png')
+plt.close()
