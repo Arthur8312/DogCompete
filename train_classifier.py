@@ -17,8 +17,8 @@ from sklearn.model_selection import KFold
 from classification_models.keras import Classifiers
 
 import matplotlib.pyplot as plt
-feature_dim_2 = 499
-feature_dim_1 = 120
+feature_dim_2 = 178
+feature_dim_1 = 129
 channel = 1
 epochs = 30
 batch_size = 80
@@ -120,7 +120,7 @@ plt.title('Model loss')
 plt.ylabel('Loss')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig('result_log/loss1.png')
+plt.savefig('result_log/loss2.png')
 plt.close()
 # seed = 7
 # np.random.seed(seed)

@@ -17,19 +17,22 @@ import librosa
 import python_speech_features
 import tensorflow.keras as keras
 import csv
+from scipy import signal
 test_path = 'public_test/'
 test_list = os.listdir(test_path)
-weight_path = 'model_log/checkpoint-30.hdf5'
+weight_path = 'model_log/best.h5'
 model = keras.models.load_model(weight_path, compile = False)
 category = ['Filename','Barking', 'Howling', 'Crying', 'COSmoke', 'GlassBreaking', 'Other']
 ans_list = []
 ans_list.append(category)
 for data in test_list:
     data_path = test_path+data
-    audio, sr = librosa.load(data_path, sr=8000)
-    mel = python_speech_features.logfbank(audio, samplerate=8000, nfft=2048, nfilt=120)
-    mel = mel.T
-    mel = mel.reshape(1, 120, 499, 1)
+    audio, sr = librosa.load(data_path, sr=None)
+    frq, time, mel = signal.spectrogram(audio, fs=sr, window='hann', scaling='spectrum', nperseg=256)
+    mel = mel.reshape(1, 129, 178, 1)
+    # mel = python_speech_features.logfbank(audio, samplerate=8000, nfft=2048, nfilt=120)
+    # mel = mel.T
+    # mel = mel.reshape(1, 120, 499, 1)
     ans = model.predict(mel)
     ans = ans.tolist()
     data_l = [data.split('.')[0]] + ans[0]
