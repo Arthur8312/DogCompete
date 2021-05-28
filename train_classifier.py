@@ -17,10 +17,10 @@ from sklearn.model_selection import KFold
 from classification_models.keras import Classifiers
 
 import matplotlib.pyplot as plt
-feature_dim_2 = 178
-feature_dim_1 = 129
+feature_dim_2 = 150
+feature_dim_1 = 120
 channel = 1
-epochs = 30
+epochs = 60
 batch_size = 80
 verbose = 1
 num_classes = 6
@@ -92,7 +92,7 @@ plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig('acc1.png')
+plt.savefig('result_log/acc1.png')
 plt.close()
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
@@ -105,14 +105,14 @@ plt.close()
 model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-5),
             metrics=['accuracy'])
-history = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
+history = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=10, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
 plt.plot(history.history['accuracy'])
 plt.plot(history.history['val_accuracy'])
 plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig('acc2.png')
+plt.savefig('result_log/acc2.png')
 plt.close()
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])

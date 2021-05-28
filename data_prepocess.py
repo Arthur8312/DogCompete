@@ -31,12 +31,29 @@ X_validation.sort(key= lambda s:s[1])
 with open('val_data.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerows(X_validation)
+    
+def speech_roi(y, n=5, sample_r=8000, sec=1.5): 
+    index = 0
+    y_t = abs(y)
+    index_temp = 0
+    t0 = y_t[0:int(sec*sample_r)]
+    max_temp = sum(t0)
+    temp = sum(t0)
+    while index+sample_r+n < len(y):
+        a1 = sum(y_t[index: index+n]) #最前面n筆
+        a2 = sum(y_t[index+sample_r: index+sample_r+n]) #最後面n筆
+        temp = temp - a1 +a2 #更新1s
+        if temp>max_temp:
+            index_temp = index
+            max_temp = temp
+        index =index+n
+    return y[index_temp:index_temp+sample_r]
 #資料轉melspec 並切齊
-def wav2melspec(wave, sr, max_len=178):
+def wav2melspec(wave, sr, max_len=150):
 
-    # melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120)
-    # melspec = melspec.T
-    frq, time, melspec = signal.spectrogram(wave, fs=sr, window='hann', scaling='spectrum', nperseg=256)
+    melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120)
+    melspec = melspec.T
+    # frq, time, melspec = signal.spectrogram(wave, fs=sr, window='hann', scaling='spectrum', nperseg=256)
 
     if (max_len > melspec.shape[1]):
         pad_width = max_len - melspec.shape[1]
@@ -56,6 +73,7 @@ valid_path = 'val_npy/'
 
 for data in X_validation:
     wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
+    wave =speech_roi(wave)
     mel = wav2melspec(wave, sr)
     if index == int(data[1]):
         mel_list.append(mel)
@@ -73,11 +91,13 @@ total_aug = 10
 mel_list = []
 index = 0
 temp = category[index]
-train_path = 'npy/'
+train_path = 'train_npy/'
 aug = augf.Sequential([ag.VtlpAug(8000, zone=(0,1), coverage=1)])
 for data in X_train:
     wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
-    aug_datas = aug.augment(wave, 9)
+    wave =speech_roi(wave)
+    # aug_datas = aug.augment(wave, 9)
+    aug_datas = []
     aug_datas.append(wave)
     for aug_data in aug_datas:
         mel = wav2melspec(aug_data, sr)
