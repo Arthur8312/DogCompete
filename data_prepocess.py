@@ -57,6 +57,8 @@ if __name__ == '__main__':
         rows = csv.reader(csvfile)
         label = list(rows)
         
+    with open('data_extend/Other.pkl', 'rb') as fp:
+        noise = pickle.load(fp)
     label.remove(label[0])
     mel_list = []
     other = []
@@ -103,7 +105,8 @@ if __name__ == '__main__':
     aug = augf.Sometimes([ag.VtlpAug(8000, zone=(0,1)),
                           ag.ShiftAug(8000, 1.5),
                           ag.SpeedAug(factor=(0.5, 1.5),zone=(0, 1)),
-                          ag.LoudnessAug(zone=(0,1))])
+                          ag.LoudnessAug(zone=(0,1)),
+                          ag.NoiseAug(noises=noise)])
     for data in X_train:
         wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
         # wave =speech_roi(wave)
