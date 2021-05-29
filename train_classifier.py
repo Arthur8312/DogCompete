@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
-epochs = 60
+epochs = 30
 batch_size = 80
 verbose = 1
 num_classes = 6
@@ -105,7 +105,7 @@ plt.close()
 model.compile(loss=keras.losses.categorical_crossentropy,
             optimizer=keras.optimizers.Adam(lr=1e-5),
             metrics=['accuracy'])
-history = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=10, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
+history = model.fit(X_train, y_train_hot, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_data=(X_test, y_test_hot), callbacks=callback)
 plt.plot(history.history['accuracy'])
 plt.plot(history.history['val_accuracy'])
 plt.title('Model accuracy')

@@ -44,7 +44,7 @@ def speech_roi(y, n=5, sample_r=8000, sec=1.5):
     return y[index_temp:index_temp+sample_r]
 
 #資料轉melspec 並切齊
-def wav2melspec(wave, sr, max_len=150):
+def wav2melspec(wave, sr, max_len=499):
 
     melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120)
     melspec = melspec.T
@@ -59,10 +59,10 @@ def wav2melspec(wave, sr, max_len=150):
 
 for data in test_list:
     data_path = test_path+data
-    audio, sr = librosa.load(data_path, sr=None)
-    wave =speech_roi(audio)
-    mel = wav2melspec(wave, sr, max_len=150)
-    mel = mel.reshape(1, 120, 150, 1)
+    wave, sr = librosa.load(data_path, sr=None)
+    # wave =speech_roi(audio)
+    mel = wav2melspec(wave, sr, max_len=499)
+    mel = mel.reshape(1, 120, 499, 1)
     ans = model.predict(mel)
     ans = ans.tolist()
     data_l = [data.split('.')[0]] + ans[0]
