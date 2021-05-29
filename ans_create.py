@@ -26,6 +26,22 @@ model = keras.models.load_model(weight_path, compile = False)
 category = ['Filename','Barking', 'Howling', 'Crying', 'COSmoke', 'GlassBreaking', 'Other']
 ans_list = []
 ans_list.append(category)
+def speech_roi(y, n=5, sample_r=8000, sec=1.5): 
+    index = 0
+    y_t = abs(y)
+    index_temp = 0
+    t0 = y_t[0:int(sec*sample_r)]
+    max_temp = sum(t0)
+    temp = sum(t0)
+    while index+sample_r+n < len(y):
+        a1 = sum(y_t[index: index+n]) #最前面n筆
+        a2 = sum(y_t[index+sample_r: index+sample_r+n]) #最後面n筆
+        temp = temp - a1 +a2 #更新1s
+        if temp>max_temp:
+            index_temp = index
+            max_temp = temp
+        index =index+n
+    return y[index_temp:index_temp+sample_r]
 
 #資料轉melspec 並切齊
 def wav2melspec(wave, sr, max_len=150):
@@ -44,8 +60,8 @@ def wav2melspec(wave, sr, max_len=150):
 for data in test_list:
     data_path = test_path+data
     audio, sr = librosa.load(data_path, sr=None)
-
-    mel = wav2melspec(audio, sr, max_len=150)
+    wave =speech_roi(audio)
+    mel = wav2melspec(wave, sr, max_len=150)
     mel = mel.reshape(1, 120, 150, 1)
     ans = model.predict(mel)
     ans = ans.tolist()
