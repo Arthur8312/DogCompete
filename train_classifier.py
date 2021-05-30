@@ -58,7 +58,7 @@ def audio_model():
   model.add(MaxPooling2D(pool_size=(4, 1)))
   model.add(Conv2D(256, kernel_size=(10, 1), activation='relu', padding='valid'))
   model.add(Conv2D(512, kernel_size=(1, 50), activation='relu', padding='same'))
-  model.add(keras.layers.GlobalMaxPooling2D())
+  model.add(keras.layers.GlobalAveragePooling2D())
   model.add(Dropout(0.25))
   model.add(Dense(256, activation='relu'))
   model.add(Dropout(0.2))
