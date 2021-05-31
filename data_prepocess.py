@@ -33,9 +33,10 @@ def speech_roi(y, n=5, sample_r=8000, sec=1.5):
         index =index+n
     return y[index_temp:index_temp+sample_r]
 #資料轉melspec 並切齊
-def wav2melspec(wave, sr, max_len=499):
+def wav2melspec(wave, sr, max_len=312):
 
-    melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120)
+    # melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120)
+    melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120, winlen=0.032, winstep=0.016)
     melspec = melspec.T
     # frq, time, melspec = signal.spectrogram(wave, fs=sr, window='hann', scaling='spectrum', nperseg=256)
 
@@ -105,8 +106,8 @@ if __name__ == '__main__':
     aug = augf.Sometimes([ag.VtlpAug(8000, zone=(0,1)),
                           ag.ShiftAug(8000, 1.5),
                           ag.SpeedAug(factor=(0.5, 1.5),zone=(0, 1)),
-                          ag.LoudnessAug(zone=(0,1))
-                          ])
+                          ag.LoudnessAug(zone=(0,1)),
+                          ag.NoiseAug(noises=noise)])
     for data in X_train:
         wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
         # wave =speech_roi(wave)
