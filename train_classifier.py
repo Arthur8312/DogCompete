@@ -17,7 +17,7 @@ from sklearn.model_selection import KFold
 from classification_models.keras import Classifiers
 
 import matplotlib.pyplot as plt
-feature_dim_2 = 312
+feature_dim_2 = 499
 feature_dim_1 = 120
 channel = 1
 epochs = 30

@@ -33,10 +33,10 @@ def speech_roi(y, n=5, sample_r=8000, sec=1.5):
         index =index+n
     return y[index_temp:index_temp+sample_r]
 #資料轉melspec 並切齊
-def wav2melspec(wave, sr, max_len=312):
+def wav2melspec(wave, sr, max_len=499):
 
-    # melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120)
-    melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120, winlen=0.032, winstep=0.016)
+    melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120)
+    # melspec = python_speech_features.base.logfbank(wave, samplerate=sr, nfft=1024, nfilt=120, winlen=0.032, winstep=0.016)
     melspec = melspec.T
     # frq, time, melspec = signal.spectrogram(wave, fs=sr, window='hann', scaling='spectrum', nperseg=256)
 
@@ -54,7 +54,7 @@ def wav2melspec(wave, sr, max_len=312):
 
 if __name__ == '__main__':
     #讀取CSV
-    with open('meta_train.csv') as csvfile:
+    with open('meta_train_new.csv') as csvfile:
         rows = csv.reader(csvfile)
         label = list(rows)
         
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     other = []
     
     y = [num[1] for num in label]
-    X_train, X_validation = train_test_split(label, stratify = y ,test_size = 0.1, random_state=42)
+    X_train, X_validation = train_test_split(label, stratify = y ,test_size = 0.1, random_state=38)
     
     X_train.sort(key= lambda s:s[1])
     X_validation.sort(key= lambda s:s[1])
