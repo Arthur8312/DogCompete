@@ -81,21 +81,29 @@ if __name__ == '__main__':
     mel_list = []
     temp = category[index]
     valid_path = 'val_npy/'
-    
+    aug = augf.Sometimes([ag.VtlpAug(8000, zone=(0,1)),
+                          ag.ShiftAug(8000, 1.5),
+                          ag.SpeedAug(factor=(0.5, 1.5),zone=(0, 1)),
+                          ag.LoudnessAug(zone=(0,1)),
+                          ag.NoiseAug(noises=noise)])    
     for data in X_validation:
         wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
         # wave =speech_roi(wave)
-        mel = wav2melspec(wave, sr)
-        if index == int(data[1]):
-            mel_list.append(mel)
-        else:
-            # print(len(mel_list))
-            np.save(valid_path+temp+'.npy', mel_list)
-            #Update to new category
-            index = index + 1
-            temp = category[index]
-            mel_list = []
-            mel_list.append(mel)
+        aug_datas = aug.augment(wave, 9)
+        aug_datas.append(wave)
+        for aug_data in aug_datas:
+            mel = wav2melspec(aug_data, sr)
+            
+            if index == int(data[1]):
+                mel_list.append(mel)
+            else:
+
+                np.save(valid_path+temp+'.npy', mel_list)
+                #Update to new category
+                index = index + 1
+                temp = category[index]
+                mel_list = []
+                mel_list.append(mel)
     np.save(valid_path+temp+'.npy', mel_list)
     
     total_aug = 10
@@ -103,11 +111,7 @@ if __name__ == '__main__':
     index = 0
     temp = category[index]
     train_path = 'train_npy/'
-    aug = augf.Sometimes([ag.VtlpAug(8000, zone=(0,1)),
-                          ag.ShiftAug(8000, 1.5),
-                          ag.SpeedAug(factor=(0.5, 1.5),zone=(0, 1)),
-                          ag.LoudnessAug(zone=(0,1)),
-                          ag.NoiseAug(noises=noise)])
+
     for data in X_train:
         wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
         # wave =speech_roi(wave)
