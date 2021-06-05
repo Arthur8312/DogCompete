@@ -83,13 +83,14 @@ if __name__ == '__main__':
     valid_path = 'val_npy/'
     aug = augf.Sometimes([ag.VtlpAug(8000, zone=(0,1)),
                           ag.ShiftAug(8000, 1.5),
-                          ag.SpeedAug(factor=(0.5, 1.5),zone=(0, 1)),
-                          ag.LoudnessAug(zone=(0,1)),
-                          ag.NoiseAug(noises=noise)])    
+                          ag.SpeedAug(factor=(0.8, 1.5), zone=(0, 1)),
+                          ag.LoudnessAug(zone=(0,1), factor=(0.95, 2)),
+                          ag.NoiseAug(noises=noise),
+                          ag.NoiseAug()])    
     for data in X_validation:
         wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
         # wave =speech_roi(wave)
-        aug_datas = aug.augment(wave, 9)
+        aug_datas = aug.augment(wave, 14)
         aug_datas.append(wave)
         for aug_data in aug_datas:
             mel = wav2melspec(aug_data, sr)
@@ -115,7 +116,7 @@ if __name__ == '__main__':
     for data in X_train:
         wave, sr = librosa.load('train/'+data[0]+'.wav', sr=None)
         # wave =speech_roi(wave)
-        aug_datas = aug.augment(wave, 9)
+        aug_datas = aug.augment(wave, 14)
         aug_datas.append(wave)
         for aug_data in aug_datas:
             mel = wav2melspec(aug_data, sr)
