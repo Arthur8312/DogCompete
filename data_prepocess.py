@@ -54,7 +54,7 @@ def wav2melspec(wave, sr, max_len=499):
 
 if __name__ == '__main__':
     #讀取CSV
-    with open('meta_train_new.csv') as csvfile:
+    with open('meta_train.csv') as csvfile:
         rows = csv.reader(csvfile)
         label = list(rows)
         
