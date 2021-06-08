@@ -19,9 +19,9 @@ import tensorflow.keras as keras
 import csv
 from scipy import signal
 import numpy as np
-test_path = 'public_test/'
+test_path = 'private_test/'
 test_list = os.listdir(test_path)
-weight_path = 'model_log/best.h5'
+weight_path = 'weight_acc_97.hdf5'
 model = keras.models.load_model(weight_path, compile = False)
 category = ['Filename','Barking', 'Howling', 'Crying', 'COSmoke', 'GlassBreaking', 'Other']
 ans_list = []
@@ -68,14 +68,14 @@ for data in test_list:
     data_l = [data.split('.')[0]] + ans[0]
     ans_list.append(data_l)
     
-# with open('test.csv','w', newline='') as csvfile:
-#     writer = csv.writer(csvfile)
-#     writer.writerows(ans_list)
+with open('test.csv','w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerows(ans_list)
 with open('sample_submission.csv') as csvfile:
     rows = csv.reader(csvfile)
     new = list(rows)
 
-new[1:10001] = ans_list[1:10001]
+new[10001:30001] = ans_list[1:20001]
 with open('submission.csv','w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerows(new)
