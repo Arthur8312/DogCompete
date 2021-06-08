@@ -19,7 +19,7 @@ import tensorflow.keras as keras
 import csv
 from scipy import signal
 import numpy as np
-test_path = 'private_test/'
+test_path = 'public_test/'
 test_list = os.listdir(test_path)
 weight_path = 'weight_acc_97.hdf5'
 model = keras.models.load_model(weight_path, compile = False)
@@ -75,7 +75,9 @@ with open('sample_submission.csv') as csvfile:
     rows = csv.reader(csvfile)
     new = list(rows)
 
-new[10001:30001] = ans_list[1:20001]
+new[1:10001] = ans_list[1:10001]
+# new[10001:30001] = ans_list[1:20001]
+
 with open('submission.csv','w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerows(new)
